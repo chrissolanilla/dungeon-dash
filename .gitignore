@@ -1,0 +1,21 @@
+# build outputs
+a.out
+main
+*.o
+*.a
+*.so
+*.dylib
+*.dll
+
+build/
+dist/
+out/
+bin/
+obj/
+
+*.swp
+*.swo
+*~
+.DS_Store
+
+
