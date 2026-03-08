@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <memory>
 #include <termios.h>
+#include <cstdint>
 
 static void ansi_clear_and_home() {
     std::cout << "\x1b[2J\x1b[H";
@@ -16,14 +17,14 @@ static int readKey() {
 		return c;
 	return -1;
 }
-enum class key_code {
-    none,
-    esc,
+enum class key_code : uint16_t {
+    none = 5 ,
+    esc =0  ,
     up,
     down,
     left,
     right,
-    w, a, s, d
+    w, a, s, d, n, x
 };
 
 static key_code read_key_code() {
@@ -100,6 +101,21 @@ class Entity {
 		Entity(int pos_x, int pos_y, std::string name, char body ): pos_x(pos_x), pos_y(pos_y), name(name), body(body) {
 			std::cout << "parametric constructor" << std::endl;
 		}
+
+		virtual ~Entity() = default;
+
+		//this is the copy constructor i think
+		Entity(const Entity&) = default;
+
+		//thisis the move constructor?
+		Entity& operator=(const Entity&) = default;
+
+		//idk what this is.
+		Entity(Entity&&) noexcept = default;
+
+		//idk what this is.
+		Entity& operator=(Entity&&) noexcept = default;
+
 
 		void list_attributes(){
 			std::cout << "name: " << name << " body: " << body << std::endl;
@@ -206,6 +222,8 @@ int main(){
 			if (key == key_code::s) entities[0]->move_by(0,  1, w, h);
 			if (key == key_code::a) entities[0]->move_by(-1, 0, w, h);
 			if (key == key_code::d) entities[0]->move_by(1,  0, w, h);
+			//if they press n, make a new player and add it to the game
+			if (key == key_code::n) entities.push_back(std::make_unique<Player> (p1));
 
 			// p2  arrow keys
 			if (key == key_code::up)    entities[1]->move_by(0, -1, w, h);
@@ -228,5 +246,8 @@ int main(){
 	ansi_clear_and_home();
     std::cout << "bye\n";
 
+	std::cout << static_cast<uint16_t>(key_code::w) << "\n";
+
+	std::cout << static_cast<uint16_t>(key_code::none) << "\n";
 	return 0;
 }
